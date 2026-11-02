@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+#include "../component/ComponentStatus.hpp"
 
 
 class Utility {
@@ -9,6 +11,6 @@ public:
 
     static ComponentStatus convertToStatus(std::string statusName);
 
-    static bool checkForItem()
+    static bool checkForItem();
 
-}
+};
