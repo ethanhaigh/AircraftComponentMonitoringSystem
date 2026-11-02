@@ -4,6 +4,7 @@
 #include "ComponentStorage.hpp"
 #include "../api/CommandLineController.hpp"
 #include "ComponentMonitor.hpp"
+#include "../component/ComponentStatus.hpp"
 
 int main(void)
 {
@@ -24,19 +25,33 @@ void ComponentMonitor::addComponent(std::string id, std::string name, std::strin
     
 }
 
-void ComponentMonitor::updateComponent(std::string id, std::string status)
+void ComponentMonitor::updateComponent(std::string id, std::string statusName)
 {
+    Component* component = storage.getComponent(id);
+    ComponentStatus status = Utility::convertToStatus(statusName);
+    component->setStatus(status);
+    if (storage.updateComponent(std::unique_ptr<Component>(component)))
+    {
+        CommandLineController::logSuccessfulUpdate(id, statusName);
+        return;
+    }
+    CommandLineController::logFailedUpdate(id, statusName);
 
 }
 
-void ComponentMonitor::removeComponent(std::string id)
+void ComponentMonitor::deleteComponent(std::string id)
 {
-
+    if (storage.deleteComponent(id))
+    {
+        CommandLineController::logSuccessfulDelete(id);
+        return;
+    }
+    CommandLineController::logFailedDelete(id);
 }
 
 void ComponentMonitor::monitorComponent(std::string id)
 {
-
+    
 }
 
 void ComponentMonitor::displayComponent(std::string id)
