@@ -13,6 +13,6 @@ class ComponentFactory {
     public:
         ComponentFactory();
 
-        static std::unique_ptr<Component> createComponent(const std::string& type);
+        std::unique_ptr<Component> createComponent(const std::string& type);
 
-}
+};
