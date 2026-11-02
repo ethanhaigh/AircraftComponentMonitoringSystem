@@ -1,8 +1,8 @@
-#include "../ComponentFactory.hpp"
-#include "../../monitor/Utility.hpp"
-#include "Engine.hpp"
-#include "LandingGear.hpp"
-#include "Wing.hpp"
+#include "ComponentFactory.hpp"
+#include "../monitor/Utility.hpp"
+#include "types/Engine.hpp"
+#include "types/LandingGear.hpp"
+#include "types/Wing.hpp"
 
 ComponentFactory::ComponentFactory() {
     componentTypes = {
