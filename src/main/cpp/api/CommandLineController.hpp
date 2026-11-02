@@ -10,4 +10,6 @@ class CommandLineController {
         static void logNameInUse(std::string id);
 
         static void logComponentNotFound(std::string id);
+
+        static void logInvalidStatus(std::string status);
 }
