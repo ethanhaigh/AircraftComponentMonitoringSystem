@@ -1,9 +1,10 @@
 #include <iostream>
 #include "../component/ComponentStatus.hpp"
-#include "../api/CommandLineController.cpp"
+#include "../api/CommandLineController.hpp"
 #include <cctype>
+#include "Utility.hpp"
 
-static std::string convertToLowercase(std::string input) {
+std::string Utility::convertToLowercase(std::string input) {
     std::string output = "";
 
     for (int i = 0; i < input.length(); i++)
@@ -14,7 +15,7 @@ static std::string convertToLowercase(std::string input) {
     return output;
 }
 
-static ComponentStatus convertToStatus(std::string statusName) {
+ComponentStatus Utility::convertToStatus(std::string statusName) {
     if (convertToLowercase(statusName) == "normal")
     {
         return ComponentStatus::Normal;
