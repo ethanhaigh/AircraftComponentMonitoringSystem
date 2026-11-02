@@ -16,4 +16,11 @@ public:
     
     bool checkName(std::string name);
 
+    bool addComponent(std::unique_ptr<Component> component);
+
+    bool updateComponent(std::unique_ptr<Component> component);
+
+    bool deleteComponent(std::string id);
+    
+
 };

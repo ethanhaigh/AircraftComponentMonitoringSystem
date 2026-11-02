@@ -38,3 +38,24 @@ bool ComponentStorage::checkName(std::string name)
     }
     return found;
 }
+
+bool ComponentStorage::addComponent(std::unique_ptr<Component> component)
+{
+    components.push_back(component);
+}
+
+bool ComponentStorage::updateComponent(std::unique_ptr<Component> component)
+{
+    deleteComponent(component->getId());
+    addComponent(std::move(component));
+}
+
+bool ComponentStorage::deleteComponent(std::string id)
+{
+    for (int i=0; i < components.size(); i++)
+    {
+        if (components[i]->getId() == id) {
+            components.erase(components.begin() + i);
+        }
+    }
+}
