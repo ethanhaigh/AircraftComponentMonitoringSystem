@@ -24,6 +24,10 @@ public:
         return status;
     }
 
+    void setStatus(ComponentStatus newStatus){
+        status = newStatus;
+    }
+
     virtual std::string getDetails() const = 0;
 
     virtual std::string checkValues() const = 0;
