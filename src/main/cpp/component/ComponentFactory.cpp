@@ -1,23 +1,28 @@
+#include <iostream>
 #include "ComponentFactory.hpp"
 #include "../monitor/Utility.hpp"
 #include "types/Engine.hpp"
 #include "types/LandingGear.hpp"
 #include "types/Wing.hpp"
+#include "ComponentStatus.hpp"
 
 ComponentFactory::ComponentFactory() {
     componentTypes = {
         {"engine",
-            []() { return std::make_unique<Engine>(); }},
+            [](const std::string id, const std::string name, const ComponentStatus status) { return new Engine(id, name, status); }},
 
         {"landinggear",
-             []() { return std::make_unique<LandingGear>(); }},
+             [](const std::string id, const std::string name, const ComponentStatus status) { return new LandingGear(id, name, status); }},
 
         {"wing",
-             []() { return std::make_unique<Wing>(); }}
+             [](const std::string id, const std::string name, const ComponentStatus status) { return new Wing(id, name, status); }}
     };
 }
 
-std::unique_ptr<Component> ComponentFactory::createComponent(const std::string& type)  {
+Component* ComponentFactory::createComponent(const std::string type, std::string id, std::string name, ComponentStatus status)  {
     auto iterator = componentTypes.find(Utility::convertToLowercase(type));
-
+    if (iterator == componentTypes.end()) {
+        return nullptr;
+    }
+    return iterator->second(id, name, status);
 }

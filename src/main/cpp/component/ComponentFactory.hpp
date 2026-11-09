@@ -4,15 +4,16 @@
 #include <map>
 #include <functional>
 #include "Component.hpp"
+#include  "ComponentStatus.hpp"
 
 class ComponentFactory {
 
     private:
-        std::map<std::string, std::function<std::unique_ptr<Component>()>> componentTypes;
+        std::map<std::string, std::function<Component* (const std::string, const std::string, const ComponentStatus)>> componentTypes;
 
     public:
         ComponentFactory();
 
-        std::unique_ptr<Component> createComponent(const std::string& type);
+        Component* createComponent(const std::string type, std::string id, std::string name, ComponentStatus status);
 
 };
