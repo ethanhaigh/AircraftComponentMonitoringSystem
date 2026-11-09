@@ -10,11 +10,26 @@ Component* ComponentStorage::getComponent(std::string id)
 {
     for  (const auto& component : components) {
         if (component->getId() == id) {
-            return component.get();
+            return component;
         }
     }
     CommandLineController::logComponentNotFound(id);
     return nullptr;
+}
+
+std::vector<Component*> ComponentStorage::getComponents()
+{
+    return components;
+}
+
+void ComponentStorage::setComponentData(Component* component) {
+    std::vector<std::string> dataTypes = component->getDataTypes();
+    std::vector<std::string> parameters =  CommandLineController::requestDataForComponent(dataTypes);
+    std::string validation = component->updateValues(parameters);
+    if (validation != "") {
+        CommandLineController::logInvalidData(dataTypes, parameters, validation);
+        return;
+    }
 }
 
 bool ComponentStorage::checkId(std::string id)
@@ -39,12 +54,17 @@ bool ComponentStorage::checkName(std::string name)
     return found;
 }
 
-bool ComponentStorage::addComponent(std::unique_ptr<Component> component)
+int ComponentStorage::getSize()
+{
+    return components.size();
+}
+
+bool ComponentStorage::addComponent(Component* component)
 {
     components.push_back(component);
 }
 
-bool ComponentStorage::updateComponent(std::unique_ptr<Component> component)
+bool ComponentStorage::updateComponent(Component* component)
 {
     deleteComponent(component->getId());
     addComponent(std::move(component));

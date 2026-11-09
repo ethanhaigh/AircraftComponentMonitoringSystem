@@ -7,18 +7,24 @@
 class ComponentStorage {
 
 private:
-    std::vector<std::unique_ptr<Component>> components;
+    std::vector<Component*> components;
 
 public:
     Component* getComponent(std::string id);
+
+    std::vector<Component*> getComponents();
+
+    void setComponentData(Component* component);
     
     bool checkId(std::string id);
     
     bool checkName(std::string name);
 
-    bool addComponent(std::unique_ptr<Component> component);
+    int getSize();
 
-    bool updateComponent(std::unique_ptr<Component> component);
+    bool addComponent(Component* component);
+
+    bool updateComponent(Component* component);
 
     bool deleteComponent(std::string id);
     
