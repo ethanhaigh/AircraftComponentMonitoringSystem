@@ -3,5 +3,6 @@
 enum class ComponentStatus {
     Normal,
     Warning,
-    Fault
+    Fault,
+    Unknown
 };
