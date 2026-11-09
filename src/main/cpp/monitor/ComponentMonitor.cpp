@@ -11,9 +11,8 @@ int main(void)
 
 }
 
-void ComponentMonitor::addComponent(std::string id, std::string name, std::string type, std::string status)
+void ComponentMonitor::addComponent(std::string id, std::string name, ComponentStatus status, std::string type)
 {
-    // verify id and name aren't already in use
     if (storage.checkId(id)) {
         CommandLineController::logIdInUse(id);
         return;
@@ -22,20 +21,31 @@ void ComponentMonitor::addComponent(std::string id, std::string name, std::strin
         CommandLineController::logNameInUse(name);
         return;
     }
-    
-}
-
-void ComponentMonitor::updateComponent(std::string id, std::string statusName)
-{
-    Component* component = storage.getComponent(id);
-    ComponentStatus status = Utility::convertToStatus(statusName);
-    component->setStatus(status);
-    if (storage.updateComponent(std::unique_ptr<Component>(component)))
-    {
-        CommandLineController::logSuccessfulUpdate(id, statusName);
+    Component* component = factory.createComponent(type, id, name, status);
+    if (component == nullptr) {
+        CommandLineController::logFailedAdd(id, name, type, Utility::convertToString(status));
         return;
     }
-    CommandLineController::logFailedUpdate(id, statusName);
+    storage.setComponentData(component);
+    if (storage.addComponent(component))
+    {
+        CommandLineController::logSuccessfulAdd(id, name, type, Utility::convertToString(status));
+        return;
+    }
+    CommandLineController::logFailedAdd(id, name, type, Utility::convertToString(status));
+}
+
+void ComponentMonitor::updateComponent(std::string id, ComponentStatus status)
+{
+    Component* component = storage.getComponent(id);
+    component->setStatus(status);
+    storage.setComponentData(component);
+    if (storage.updateComponent(component))
+    {
+        CommandLineController::logSuccessfulUpdate(id, Utility::convertToString(status));
+        return;
+    }
+    CommandLineController::logFailedUpdate(id, Utility::convertToString(status));
 
 }
 
@@ -51,10 +61,28 @@ void ComponentMonitor::deleteComponent(std::string id)
 
 void ComponentMonitor::monitorComponent(std::string id)
 {
-    
+    Component* component = storage.getComponent(id);
+    std::string result = component->checkValues();
+    if (result.rfind("WARNING", 0) == 0) {
+        component->setStatus(ComponentStatus::Warning);
+        storage.updateComponent(component);
+    }
+    CommandLineController::logMonitorResult(result);
+
+}
+
+void ComponentMonitor::displayAllComponents()
+{
+    std::vector<Component*> components = storage.getComponents();
+
+    for (int i = 0; i  < components.size(); i++){
+        CommandLineController::displayComponent(components[i]->getDetails());
+    }
 }
 
 void ComponentMonitor::displayComponent(std::string id)
 {
-
+    Component* component = storage.getComponent(id);
+    
+    CommandLineController::displayComponent(component->getDetails());
 }
