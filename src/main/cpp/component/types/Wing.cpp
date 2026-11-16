@@ -12,11 +12,33 @@ std::string Wing::getType() const {
 }
 
  std::string Wing::getDetails() const {
-    //todo
+    std::string data = "";
+    data += "deploymentCycles: " + std::to_string(deploymentCycles) + "\n";
+    data += "deployed        : " + std::string(deployed ? "true" : "false");
+    return getComponentDetails(getType(), data); 
+ }
+
+ std::string Wing::getTypeDetails() const {
+    std::string data = "";
+    data += "deploymentCycles: " + std::to_string(deploymentCycles) + "\n";
+    data += "deployed        : " + std::string(deployed ? "true" : "false");
+    return data; 
+ }
+
+ std::string Wing::getData() const {
+    std::string data = "";
+    data = data + std::to_string(deploymentCycles) + ",";
+    data = data + std::string(deployed ? "true" : "false");
+    return data;
  }
 
  std::string Wing::checkValues() const {
-    //todo
+    std::string ret = "Wing values are within safe bounds";
+    if (0 > deploymentCycles)
+        ret = "WARNING: DeploymentCycles are below minimum of 0";
+    else if (deploymentCycles > 100000)
+        ret = "WARNING: DeploymentCycles are above maximum of 100000";
+    return ret;
  }
 
  std::vector<std::string> Wing::getDataTypes() const {
@@ -53,6 +75,7 @@ std::string Wing::getType() const {
 
     std::stringstream ss(values[0]);
     int cycles;
+    ss >> cycles;
     bool newDeployed = (values[1] == "true");
 
     deploymentCycles = cycles;

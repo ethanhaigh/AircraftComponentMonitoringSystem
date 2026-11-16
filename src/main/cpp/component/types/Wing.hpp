@@ -16,6 +16,10 @@ class Wing : public Component {
 
         std::string getDetails() const override;
 
+        std::string getTypeDetails() const override;
+
+        std::string getData() const override;
+
         std::string checkValues() const override;
 
         std::vector<std::string> getDataTypes() const override;
