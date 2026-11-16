@@ -1,0 +1,5 @@
+1,Engine1,Normal,engine,300.000000,0.0000001,Engine1,Normal,engine,300.000000,6.000000
+2,Wing1,Warning,wing,100,true
+1,Engine1,Normal,engine,300.000000,0.000000
+2,Wing1,Warning,wing,100,true
+3,LandingGear1,Fault,landingGear,80000.000000
