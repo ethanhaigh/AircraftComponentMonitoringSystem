@@ -2,13 +2,37 @@
 #include "../component/Component.hpp"
 #include "Utility.hpp"
 #include "ComponentStorage.hpp"
+#include "InputParser.hpp"
 #include "../api/CommandLineController.hpp"
 #include "ComponentMonitor.hpp"
 #include "../component/ComponentStatus.hpp"
+#include "../alert/ComponentSubject.hpp"
 
-int main(void)
+int ComponentMonitor::run()
 {
+    Utility::extractComponents("src/main/resources/components.csv", *this);
+    InputParser parser(*this);
+    subject.initialise();
+    CommandLineController controller(*this, parser);
+    controller.initialise();
+    return 0;
+}
 
+int main()
+{
+    ComponentMonitor monitor;
+    return monitor.run();
+}
+
+void ComponentMonitor::quit()
+{
+    Utility::writeComponents("src/main/resources/components.csv", storage.getComponents());
+    exit(0);
+}
+
+ComponentMonitor ComponentMonitor::getMonitor()
+{
+    return ComponentMonitor{};
 }
 
 void ComponentMonitor::addComponent(std::string id, std::string name, ComponentStatus status, std::string type)
@@ -26,26 +50,32 @@ void ComponentMonitor::addComponent(std::string id, std::string name, ComponentS
         CommandLineController::logFailedAdd(id, name, type, Utility::convertToString(status));
         return;
     }
-    storage.setComponentData(component);
+    if (!storage.setComponentData(component))
+    {
+        return;
+    };
     if (storage.addComponent(component))
     {
-        CommandLineController::logSuccessfulAdd(id, name, type, Utility::convertToString(status));
+        CommandLineController::logSuccessfulAdd(component->getDetails());
         return;
     }
-    CommandLineController::logFailedAdd(id, name, type, Utility::convertToString(status));
+    CommandLineController::logFailedAdd(component->getDetails());
 }
 
 void ComponentMonitor::updateComponent(std::string id, ComponentStatus status)
 {
     Component* component = storage.getComponent(id);
     component->setStatus(status);
-    storage.setComponentData(component);
+    if (!storage.setComponentData(component))
+    {
+        return;
+    };
     if (storage.updateComponent(component))
     {
-        CommandLineController::logSuccessfulUpdate(id, Utility::convertToString(status));
+        CommandLineController::logSuccessfulUpdate(component->getDetails());
         return;
     }
-    CommandLineController::logFailedUpdate(id, Utility::convertToString(status));
+    CommandLineController::logFailedUpdate(component->getDetails());
 
 }
 
@@ -66,8 +96,13 @@ void ComponentMonitor::monitorComponent(std::string id)
     if (result.rfind("WARNING", 0) == 0) {
         component->setStatus(ComponentStatus::Warning);
         storage.updateComponent(component);
+        subject.receiveNotification(component, result);
     }
-    CommandLineController::logMonitorResult(result);
+    if ((Utility::convertToString(component->getStatus())) != "Normal") {
+        subject.receiveNotification(component, "maintenance");
+    } else {
+        CommandLineController::logMonitorResult(result);
+    }
 
 }
 
@@ -83,6 +118,25 @@ void ComponentMonitor::displayAllComponents()
 void ComponentMonitor::displayComponent(std::string id)
 {
     Component* component = storage.getComponent(id);
+
+    if (component == nullptr)
+    {
+        return;
+    }
     
     CommandLineController::displayComponent(component->getDetails());
+}
+
+Component* ComponentMonitor::addExistingComponent(std::string id, std::string name, ComponentStatus status, std::string type)
+{
+    Component* component = factory.createComponent(type, id, name, status);
+    if (component != nullptr) {
+        storage.addComponent(component);
+    }
+    return component;
+}
+
+std::vector<std::string> ComponentMonitor::getTypes()
+{
+    return factory.getTypes();
 }
