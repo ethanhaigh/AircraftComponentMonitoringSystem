@@ -26,3 +26,12 @@ Component* ComponentFactory::createComponent(const std::string type, std::string
     }
     return iterator->second(id, name, status);
 }
+
+std::vector<std::string> ComponentFactory::getTypes()
+{
+    std::vector<std::string> types;
+    for (const auto& entry : componentTypes)
+        types.push_back(entry.first);
+    return types;
+}
+

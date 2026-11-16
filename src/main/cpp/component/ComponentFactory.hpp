@@ -16,4 +16,6 @@ class ComponentFactory {
 
         Component* createComponent(const std::string type, std::string id, std::string name, ComponentStatus status);
 
+        std::vector<std::string> getTypes();
+
 };
