@@ -5,17 +5,19 @@
 #include "InputParser.hpp"
 #include <vector>
 
+InputParser::InputParser(ComponentMonitor& monitor)
+    : monitor(monitor) {}
 
-void InputParser::parseAddInput(std::string input) {
+bool InputParser::parseAddInput(std::string input) {
     std::vector<std::string> result = Utility::splitString(input);
     ComponentStatus status;
     if (result[0] == "") {
         CommandLineController::logEmptyId();
-        return;
+        return false;
     }
     if (result[1] == "") {
         CommandLineController::logEmptyName();
-        return;
+        return false;
     }
     if (result[2] == "") {
         CommandLineController::logDefaultStatus();
@@ -23,34 +25,36 @@ void InputParser::parseAddInput(std::string input) {
     } else {
         status = Utility::convertToStatus(result[2]);
         if (status == ComponentStatus::Unknown) {
-            return;
+            return false;
         }
     }
     if (result[3] == "") {
         CommandLineController::logEmptyType();
-        return;
+        return false;
     }
     monitor.addComponent(result[0], result[1], status, result[3]);
+    return true;
 
 }
 
-void InputParser::parseUpdateInput(std::string input) {
+bool InputParser::parseUpdateInput(std::string input) {
     std::vector<std::string> result = Utility::splitString(input);
     ComponentStatus status;
     if (result[0] == "") {
         CommandLineController::logEmptyId();
-        return;
+        return false;
     }
     if (result[1] == "") {
         CommandLineController::logEmptyStatus();
-        return;
+        return false;
     } else {
         status = Utility::convertToStatus(result[1]);
         if (status == ComponentStatus::Unknown) {
-            return;
+            return false;
         }
     }
     monitor.updateComponent(result[0], status);
+    return true;
 }
 
 void InputParser::parseMonitorInput(std::string input)
@@ -60,7 +64,7 @@ void InputParser::parseMonitorInput(std::string input)
 
 void InputParser::parseDeleteInput(std::string input)
 {
-    monitor.monitorComponent(input);
+    monitor.deleteComponent(input);
 }
 
 void InputParser::parseDisplayAllInput()
@@ -72,4 +76,3 @@ void InputParser::parseDisplayInput(std::string input)
 {
     monitor.displayComponent(input);
 }
-

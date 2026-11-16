@@ -1,16 +1,19 @@
 #pragma once
-#include <iostream>
+#include <string>
 #include <vector>
-#include "ComponentMonitor.hpp"
+
+class ComponentMonitor;
 
 class InputParser {
 
 private:
-    ComponentMonitor monitor;
+    ComponentMonitor& monitor;
 
 public:
-    void parseAddInput(std::string input);
-    void parseUpdateInput(std::string input);
+    explicit InputParser(ComponentMonitor& monitor);
+
+    bool parseAddInput(std::string input);
+    bool parseUpdateInput(std::string input);
     void parseDeleteInput(std::string input);
     void parseMonitorInput(std::string input);
     void parseDisplayAllInput();
