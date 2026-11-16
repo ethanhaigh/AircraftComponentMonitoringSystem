@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "ComponentStatus.hpp"
+#include "../monitor/Utility.hpp"
 #include <vector>
 
 class Component {
@@ -30,9 +31,24 @@ public:
         status = newStatus;
     }
 
+    std::string getComponentDetails(std::string type, std::string data) const
+    {
+        std::string out = "";
+        out = out + "id    : " + componentId + "\n";
+        out = out + "name  : " + name + "\n";
+        out = out + "type  : " + type + "\n";
+        out = out + "status: " + Utility::convertToString(status) + "\n";
+        out = out + data;
+        return out;
+    }
+
     virtual std::string getType() const = 0;
 
     virtual std::string getDetails() const = 0;
+
+    virtual std::string getTypeDetails() const = 0;
+
+    virtual std::string getData() const = 0;
 
     virtual std::string checkValues() const = 0;
 
@@ -40,5 +56,5 @@ public:
 
     virtual std::string validateInput(std::vector<std::string> values) const = 0;
 
-    virtual std::string updateValues(std::vector<std::string> values);
+    virtual std::string updateValues(std::vector<std::string> values) = 0;
 };
