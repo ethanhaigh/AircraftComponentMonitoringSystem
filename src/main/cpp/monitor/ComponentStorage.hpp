@@ -14,7 +14,7 @@ public:
 
     std::vector<Component*> getComponents();
 
-    void setComponentData(Component* component);
+    bool setComponentData(Component* component);
     
     bool checkId(std::string id);
     
@@ -27,6 +27,8 @@ public:
     bool updateComponent(Component* component);
 
     bool deleteComponent(std::string id);
+
+    std::vector<std::string> getTypes();
     
 
 };

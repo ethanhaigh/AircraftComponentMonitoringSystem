@@ -22,14 +22,15 @@ std::vector<Component*> ComponentStorage::getComponents()
     return components;
 }
 
-void ComponentStorage::setComponentData(Component* component) {
+bool ComponentStorage::setComponentData(Component* component) {
     std::vector<std::string> dataTypes = component->getDataTypes();
     std::vector<std::string> parameters =  CommandLineController::requestDataForComponent(dataTypes);
     std::string validation = component->updateValues(parameters);
     if (validation != "") {
         CommandLineController::logInvalidData(dataTypes, parameters, validation);
-        return;
+        return false;
     }
+    return true;
 }
 
 bool ComponentStorage::checkId(std::string id)
@@ -62,12 +63,14 @@ int ComponentStorage::getSize()
 bool ComponentStorage::addComponent(Component* component)
 {
     components.push_back(component);
+    return true;
 }
 
 bool ComponentStorage::updateComponent(Component* component)
 {
     deleteComponent(component->getId());
     addComponent(std::move(component));
+    return true;
 }
 
 bool ComponentStorage::deleteComponent(std::string id)
@@ -78,4 +81,5 @@ bool ComponentStorage::deleteComponent(std::string id)
             components.erase(components.begin() + i);
         }
     }
+    return true;
 }
